@@ -21,7 +21,6 @@ public class TokenCache {
     //token 作为前缀的常量，由于与TokenCache太紧密，所以放在这里
     public static final String TOKEN_PREFIX = "token_";
 
-
     //日志    logback
     private static Logger logger = LoggerFactory.getLogger(TokenCache.class);
     //声明一个静态的内存块-guavacache

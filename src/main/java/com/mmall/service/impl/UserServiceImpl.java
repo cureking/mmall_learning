@@ -10,6 +10,7 @@ import com.mmall.uitl.MD5Util;
 import jdk.nashorn.internal.parser.Token;
 import net.sf.jsqlparser.schema.Server;
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -200,6 +201,18 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("找不到当前用户");
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    /**
+     * 校验是否为管理员
+     * @param user
+     * @return
+     */
+    public ServerResponse checkAdminRole(User user){
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 
 }
