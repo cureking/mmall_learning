@@ -46,8 +46,6 @@ public class UserServiceImpl implements IUserService {
             //由于之前已经检测过用户不存在了，所以此处的不存在一定表示指定用户名和指定密码没有同时成立（AND)，而用户名已经确定存在，那一定是密码错误了。
             return ServerResponse.createByErrorMessage("密码错误");
         }
-
-//
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess("登录成功", user);
     }

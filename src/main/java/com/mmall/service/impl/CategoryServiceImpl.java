@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements ICategoryService     {
      * @param categoryId
      * @return
      */
-    public ServerResponse selectCategoryAndChildrenById(Integer categoryId){
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId){
         //通过递归函数，获取分类当前节点和后代节点
         //通过guava的Sets，实现Set的初始化    （guava对集合的处理还是很强大的）
         Set<Category> categorySet = Sets.newHashSet();
