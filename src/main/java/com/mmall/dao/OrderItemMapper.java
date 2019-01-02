@@ -1,6 +1,9 @@
 package com.mmall.dao;
 
 import com.mmall.pojo.OrderItem;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface OrderItemMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +17,13 @@ public interface OrderItemMapper {
     int updateByPrimaryKeySelective(OrderItem record);
 
     int updateByPrimaryKey(OrderItem record);
+
+    //custom
+    List<OrderItem> getByOrderNoUserId(@Param("userId")Integer userId, @Param("orderNo")Long orderNo);
+
+    //custom    mybatis批量插入
+    void batchInsert(@Param("orderItemList")List<OrderItem> orderItemList);
+
+    //custom    管理员查询
+    List<OrderItem> getByOrderNo(@Param("orderNo")Long orderNo);
 }
