@@ -3,6 +3,7 @@ package com.mmall.service.impl;
 import com.google.common.collect.Lists;
 import com.mmall.service.IFileService;
 import com.mmall.uitl.FTPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,8 @@ import java.util.UUID;
  * @Date: 12/26/2018 13:39
  */
 @Service("iFileService")
+@Slf4j
 public class FileServiceImpl implements IFileService {
-
-    private Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     public String upload(MultipartFile file,String path){
         String fileName = file.getOriginalFilename();
@@ -28,7 +28,7 @@ public class FileServiceImpl implements IFileService {
         String fileExtensionName = fileName.substring(fileName.lastIndexOf(".")+1);
         String uploadFileName = UUID.randomUUID().toString()+"."+fileExtensionName;
 
-        logger.info("开始上传文件，上传文件的原始文件名为：{}，上传的路径为：{}，新文件名为：{}",fileName,path,uploadFileName);
+        log.info("开始上传文件，上传文件的原始文件名为：{}，上传的路径为：{}，新文件名为：{}",fileName,path,uploadFileName);
 
         File fileDir = new File(path);
         if (!fileDir.exists()){
@@ -44,7 +44,7 @@ public class FileServiceImpl implements IFileService {
             // 上传完成之后，删除upload下面的文件
             targetFile.delete();
         }catch (Exception e){
-            logger.error("文件上传失败",e);
+            log.error("文件上传失败",e);
             return null;
         }
         return targetFile.getName();

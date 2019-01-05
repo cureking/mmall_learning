@@ -1,9 +1,8 @@
 package com.mmall.uitl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,9 +14,8 @@ import java.util.List;
  * @Author: jarry
  * @Date: 12/26/2018 13:57
  */
+@Slf4j
 public class FTPUtil {
-
-    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class);
 
     private static String ftpIp = PropertiesUtil.getProperty("ftp.server.ip");
     private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
@@ -32,10 +30,10 @@ public class FTPUtil {
 
     public static boolean uploadFile(List<File> fileList) throws IOException{
         FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
-        logger.info("开始连接FTP服务器");
+        log.info("开始连接FTP服务器");
         //这里的异常直接抛出，置于业务层级处理。并不是所有的异常都要在越底层处理越好
         boolean result = ftpUtil.uploadFile("img",fileList);
-        logger.info("结束上传，上传结果：{}",result);
+        log.info("结束上传，上传结果：{}",result);
 
         return result;
     }
@@ -59,7 +57,7 @@ public class FTPUtil {
                     ftpClient.storeFile(fileItem.getName(),fis);
                 }
             } catch (IOException e) {
-                logger.error("上传文件异常（切换工作目录异常）",e);
+                log.error("上传文件异常（切换工作目录异常）",e);
                 uploaded = false;
                 e.printStackTrace();
             }finally {
@@ -78,7 +76,7 @@ public class FTPUtil {
             ftpClient.connect(ip);
             isSuccess = ftpClient.login(user,pwd);
         } catch (IOException e) {
-            logger.error("FTP服务器连接异常",e);
+            log.error("FTP服务器连接异常",e);
         }
         return isSuccess;
     }
