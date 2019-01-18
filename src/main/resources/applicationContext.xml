@@ -15,8 +15,11 @@
     <!--<context:annotation-config/>-->
     <aop:aspectj-autoproxy/>
 
-    <!--引入分配置文件-->
+    <!--引入分配置文件-Database-->
     <import resource="applicationContext-datasource.xml"/>
+
+    <!--引入分配置文件-SpringSession-->
+    <import resource="applicationContext-spring-session.xml"/>
 
 
 </beans>
