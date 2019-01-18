@@ -2,11 +2,11 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.uitl.MD5Util;
+import com.mmall.uitl.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,7 +117,9 @@ public class UserServiceImpl implements IUserService {
             //生成UUID
             String forgetToken = UUID.randomUUID().toString();
             //"token_"前缀，可以充当命名空间的作用，防止命名冲突
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
+//            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
+            //集群情况下，改用redis。（guava属于tomcat的）    self：这里的时间，没有使用硬编码 60*60*12
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username,forgetToken,Const.TOKEN_DURATION);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("密码问题的答案错误");
@@ -131,7 +133,8 @@ public class UserServiceImpl implements IUserService {
         if (validResponse.isSuccess()) {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+//        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者已过期");
         }
@@ -140,8 +143,9 @@ public class UserServiceImpl implements IUserService {
             int rowCount = userMapper.updatePasswordByUsername(username, md5Password);
             if (rowCount > 0) {
                 //personal_custom:个人认为重置密码的token应该只能用一次。无论是超时，还是使用过，都应该撤销
-                TokenCache.setKey(TokenCache.TOKEN_PREFIX + username,StringUtils.EMPTY);
-
+//                TokenCache.setKey(TokenCache.TOKEN_PREFIX + username,StringUtils.EMPTY);
+                //集群情况下，改用redis。（guava属于tomcat的）    self：这里的时间，没有使用硬编码 60*60*12
+                RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username,forgetToken,Const.TOKEN_DURATION);
                 return ServerResponse.createBySuccessMessage("修改密码成功");
             }
         } else {

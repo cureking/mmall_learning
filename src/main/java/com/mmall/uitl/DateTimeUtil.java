@@ -15,7 +15,7 @@ import java.util.Date;
 public class DateTimeUtil {
 
     //设定标准格式
-    public static final String STANDARD_FROMAT = "yyyy-mm-dd HH:mm:ss";
+    public static final String STANDARD_FORMAT = "yyyy-mm-dd HH:mm:ss";
 
     //joda-time
     //Str - > Date
@@ -36,7 +36,7 @@ public class DateTimeUtil {
 
     //重载
     public static Date strToDate(String dateTimeStr){
-        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(STANDARD_FROMAT);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(STANDARD_FORMAT);
         DateTime dateTime = dateTimeFormatter.parseDateTime(dateTimeStr);
         return dateTime.toDate();
     }
@@ -47,6 +47,6 @@ public class DateTimeUtil {
             return StringUtils.EMPTY;
         }
         DateTime dateTime = new DateTime(date);
-        return dateTime.toString(STANDARD_FROMAT);
+        return dateTime.toString(STANDARD_FORMAT);
     }
 }

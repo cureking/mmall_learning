@@ -17,10 +17,22 @@ public class Const {
     public static final String USERNAME = "username";
 
 
+    //TokenCache的配置
+    //token 作为前缀的常量，由于与TokenCache太紧密，所以放在这里
+    public static final String TOKEN_PREFIX = "token_";
+    //self  有效期限
+    public static final int TOKEN_DURATION = 60*60*12;
+
+
     //    分组，但是用枚举又显得过于繁重，故采用内部接口类来进行分组
     public interface Role {
         int ROLE_CUSTOMER = 0;    //普通用户
         int ROLE_ADMIN = 1;   //管理员
+    }
+
+    //新增Redis的有效期，用于单点登陆的登录有效期
+    public interface RedisCacheExtime{
+        int REDIS_SESSION_EXTIME = 30 * 60; //30min
     }
 
     public interface ProductListOrderBy{

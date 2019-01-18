@@ -24,6 +24,15 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- filter: expire the time of session     重置session时间的过滤器filter -->
+    <filter>
+        <filter-name>sessionExpireFilter</filter-name>
+        <filter-class>com.mmall.controller.common.SessionExpireFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>sessionExpireFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
 
     <!--ServletRequstListener的实现，web容器启动和关闭的监听者-->
     <listener>
