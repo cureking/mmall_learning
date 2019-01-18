@@ -1,11 +1,8 @@
 package com.mmall.uitl;
 
 
-import com.google.common.collect.Lists;
-import com.mmall.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -15,8 +12,6 @@ import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Description：
@@ -87,6 +82,7 @@ public class JsonUtil {
 
     /**
      * 进行复杂类型反序列化工作 （自定义类型的集合类型）
+     *
      * @param str
      * @param typeReference
      * @param <T>
@@ -106,10 +102,11 @@ public class JsonUtil {
 
     /**
      * 进行复杂类型反序列化工作（可变类型数量的）
-     * @param str   需要进行反序列化的字符串
-     * @param collectionClass   需要反序列化的集合类型 由于这里的类型未定，且为了防止与返回值类型T冲突，故采用<?>表示泛型
-     * @param elementClasses    集合中的元素类型（可多个）   此处同上通过<?>...表示多个未知泛型
-     * @param <T>   返回值的泛型类型是由javatype获取的
+     *
+     * @param str             需要进行反序列化的字符串
+     * @param collectionClass 需要反序列化的集合类型 由于这里的类型未定，且为了防止与返回值类型T冲突，故采用<?>表示泛型
+     * @param elementClasses  集合中的元素类型（可多个）   此处同上通过<?>...表示多个未知泛型
+     * @param <T>             返回值的泛型类型是由javatype获取的
      * @return
      */
     public static <T> T string2Obj(String str, Class<?> collectionClass, Class<?>... elementClasses) {

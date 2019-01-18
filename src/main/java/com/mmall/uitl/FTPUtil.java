@@ -1,7 +1,6 @@
 package com.mmall.uitl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.File;
@@ -21,28 +20,28 @@ public class FTPUtil {
     private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
     private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
 
-    public FTPUtil(String ip,int port,String user,String pwd){
+    public FTPUtil(String ip, int port, String user, String pwd) {
         this.ip = ip;
         this.port = port;
         this.user = user;
         this.pwd = pwd;
     }
 
-    public static boolean uploadFile(List<File> fileList) throws IOException{
-        FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
+    public static boolean uploadFile(List<File> fileList) throws IOException {
+        FTPUtil ftpUtil = new FTPUtil(ftpIp, 21, ftpUser, ftpPass);
         log.info("开始连接FTP服务器");
         //这里的异常直接抛出，置于业务层级处理。并不是所有的异常都要在越底层处理越好
-        boolean result = ftpUtil.uploadFile("img",fileList);
-        log.info("结束上传，上传结果：{}",result);
+        boolean result = ftpUtil.uploadFile("img", fileList);
+        log.info("结束上传，上传结果：{}", result);
 
         return result;
     }
 
-    private boolean uploadFile(String remotePath,List<File> fileList) throws IOException{
+    private boolean uploadFile(String remotePath, List<File> fileList) throws IOException {
         boolean uploaded = true;
         FileInputStream fis = null;
         //连接FTP服务器
-        if (connectServer(this.ip,this.port,this.user,this.pwd)){
+        if (connectServer(this.ip, this.port, this.user, this.pwd)) {
             try {
                 ftpClient.changeWorkingDirectory(remotePath);
                 //设置ftp连接配置
@@ -52,15 +51,15 @@ public class FTPUtil {
                 ftpClient.enterLocalPassiveMode();
 
                 //上传文件
-                for (File fileItem : fileList){
+                for (File fileItem : fileList) {
                     fis = new FileInputStream(fileItem);
-                    ftpClient.storeFile(fileItem.getName(),fis);
+                    ftpClient.storeFile(fileItem.getName(), fis);
                 }
             } catch (IOException e) {
-                log.error("上传文件异常（切换工作目录异常）",e);
+                log.error("上传文件异常（切换工作目录异常）", e);
                 uploaded = false;
                 e.printStackTrace();
-            }finally {
+            } finally {
                 //无论如何都要关闭流和ftp连接
                 //这里的异常，我们直接抛出，不在此处处理
                 fis.close();
@@ -69,14 +68,15 @@ public class FTPUtil {
         }
         return uploaded;
     }
-    private boolean connectServer(String ip,int port,String user,String pwd){
+
+    private boolean connectServer(String ip, int port, String user, String pwd) {
         ftpClient = new FTPClient();
         boolean isSuccess = false;
         try {
             ftpClient.connect(ip);
-            isSuccess = ftpClient.login(user,pwd);
+            isSuccess = ftpClient.login(user, pwd);
         } catch (IOException e) {
-            log.error("FTP服务器连接异常",e);
+            log.error("FTP服务器连接异常", e);
         }
         return isSuccess;
     }

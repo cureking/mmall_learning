@@ -13,11 +13,11 @@ public interface IShippingService {
 
     ServerResponse add(Integer userId, Shipping shipping);
 
-    ServerResponse del(Integer userId,Integer shippingId);
+    ServerResponse del(Integer userId, Integer shippingId);
 
-    ServerResponse update(Integer userId,Shipping shipping);
+    ServerResponse update(Integer userId, Shipping shipping);
 
-    ServerResponse<Shipping> select(Integer userId,Integer shippingId);
+    ServerResponse<Shipping> select(Integer userId, Integer shippingId);
 
     ServerResponse<PageInfo> list(Integer userId, int pageNum, int pageSize);
 

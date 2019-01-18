@@ -14,11 +14,9 @@ import com.mmall.uitl.BigDecimalUtil;
 import com.mmall.uitl.PropertiesUtil;
 import com.mmall.vo.CartProductVo;
 import com.mmall.vo.CartVo;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,16 +34,16 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private ProductMapper productMapper;
 
-    public ServerResponse<CartVo> add(Integer userId,Integer productId,Integer count){
+    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
         //校验参数
-        if (productId == null || count == null){
+        if (productId == null || count == null) {
             //这个返回的ServerResponse并没有使用含T的泛型，故可以使用
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
 
-        Cart cart = cartMapper.selectCartByUserIdProductId(userId,productId);
+        Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
 
-        if (cart == null){
+        if (cart == null) {
             //这个产品不在购物车中。需新增该产品记录
             Cart cartItem = new Cart();
             cartItem.setQuantity(count);
@@ -54,9 +52,9 @@ public class CartServiceImpl implements ICartService {
             cartItem.setUserId(userId);
 
             cartMapper.insert(cartItem);
-        }else {
+        } else {
             //这个产品已经在购物车中。只需增加产品数量即可
-            count = cart.getQuantity()+count;
+            count = cart.getQuantity() + count;
             cart.setQuantity(count);
             cartMapper.updateByPrimaryKeySelective(cart);
 
@@ -67,12 +65,12 @@ public class CartServiceImpl implements ICartService {
         return this.list(userId);
     }
 
-    public ServerResponse<CartVo> update(Integer userId,Integer productId,Integer count) {
-        if (productId == null || count == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count) {
+        if (productId == null || count == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        Cart cart = cartMapper.selectCartByUserIdProductId(userId,productId);
-        if (cart != null){
+        Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
+        if (cart != null) {
             cart.setQuantity(count);
             //self
             cartMapper.updateByPrimaryKeySelective(cart);
@@ -81,39 +79,39 @@ public class CartServiceImpl implements ICartService {
         return this.list(userId);
     }
 
-    public ServerResponse<CartVo> deleteProduct(Integer userId,String productIds){
+    public ServerResponse<CartVo> deleteProduct(Integer userId, String productIds) {
         //利用guava的splitter，来快速实现字符串的分割（否则就要使用数组来实现）
         List<String> productList = Splitter.on(",").splitToList(productIds);
-        if (CollectionUtils.isEmpty(productList)){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        if (CollectionUtils.isEmpty(productList)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
         //self
-        int rowResult = cartMapper.deleteByUserIdProductIds(userId,productList);
-        if (rowResult == 0){
+        int rowResult = cartMapper.deleteByUserIdProductIds(userId, productList);
+        if (rowResult == 0) {
             return ServerResponse.createByErrorMessage("删除产品失败");
         }
 //        cartMapper.deleteByUserIdProductIds(userId,productList);
         return this.list(userId);
     }
 
-    public ServerResponse<CartVo> list(Integer userId){
+    public ServerResponse<CartVo> list(Integer userId) {
         //购物车中并不做分页处理
         CartVo cartVo = this.getCartVoLimit(userId);
         return ServerResponse.createBySuccess(cartVo);
     }
 
-    public ServerResponse<CartVo> selectOrUnSelect(Integer userId,Integer productId,Integer checked){
+    public ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer productId, Integer checked) {
         //购物车中并不做分页处理
-        cartMapper.checkedOrUncheckedProduct(userId,productId,checked);
+        cartMapper.checkedOrUncheckedProduct(userId, productId, checked);
 //        CartVo cartVo = this.getCartVoLimit(userId);
 //        return ServerResponse.createBySuccess(cartVo);
 //        有了list方法后，就可以通过复用，简化代码了
         return this.list(userId);
     }
 
-    public ServerResponse<Integer> getCartProductCount(Integer userId){
+    public ServerResponse<Integer> getCartProductCount(Integer userId) {
         //防止session中User存在，而User.userId不存在
-        if (userId == null){
+        if (userId == null) {
             //经过考虑后，个人认为只有login有将user写入session的入口，而这里不会产生上述情况。所以这里真的有必要。牺牲这一点点性能，来提高（可能没提高）安全性，
             // （这里如果将null发至数据库，会导致错误信息返回（但是这个错误信息页面，应该做过处理才对，并记入日志才对），并不会想前端暴露出一些系统信息。）
             //  后来，我又想了一下。也许是通过if的判断，来减少无效信息的性能消耗。不过这个决策是否真的提高了系统性能，不得而知。
@@ -125,18 +123,19 @@ public class CartServiceImpl implements ICartService {
 
     /**
      * 根据userId，返回检查过库存等校验后，并计算完总价的购物车Vo
+     *
      * @param userId
      * @return
      */
-    private CartVo getCartVoLimit(Integer userId){
+    private CartVo getCartVoLimit(Integer userId) {
         CartVo cartVo = new CartVo();
         List<Cart> cartList = cartMapper.selectCartByUserId(userId);
         List<CartProductVo> cartProductVoList = Lists.newArrayList();
 
         BigDecimal cartTotalPrice = new BigDecimal("0");
 
-        if (CollectionUtils.isNotEmpty(cartList)){
-            for (Cart cartItem : cartList){
+        if (CollectionUtils.isNotEmpty(cartList)) {
+            for (Cart cartItem : cartList) {
                 CartProductVo cartProductVo = new CartProductVo();
 
                 cartProductVo.setId(cartItem.getId());
@@ -144,21 +143,21 @@ public class CartServiceImpl implements ICartService {
                 cartProductVo.setProductId(cartItem.getProductId());
 
                 Product product = productMapper.selectByPrimaryKey(cartItem.getProductId());
-                if (product != null){
+                if (product != null) {
                     cartProductVo.setProductMainImage(product.getMainImage());
                     cartProductVo.setProductName(product.getName());
                     cartProductVo.setProductSubtitle(product.getSubtitle());
                     cartProductVo.setProductStatus(product.getStatus());
                     cartProductVo.setProductPrice(product.getPrice());
-                    cartProductVo.setProductStock(product.getStock()    );
+                    cartProductVo.setProductStock(product.getStock());
 
                     //判断库存
                     int buyLimitCount = 0;
-                    if (product.getStock() >= cartItem.getQuantity()){
+                    if (product.getStock() >= cartItem.getQuantity()) {
                         //库存充足时
                         buyLimitCount = cartItem.getQuantity();
                         cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
-                    }else{
+                    } else {
                         buyLimitCount = product.getStock();
                         cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);
                         //购物车中更新有效库存。（要从数据库这一根源更新，才是有效，正确的）
@@ -169,12 +168,12 @@ public class CartServiceImpl implements ICartService {
                     }
                     cartProductVo.setQuantity(buyLimitCount);
                     //计算总价
-                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(),cartProductVo.getQuantity()));
+                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cartProductVo.getQuantity()));
                     cartProductVo.setProductChecked(cartItem.getChecked());
                 }
-                if (cartItem.getChecked() == Const.Cart.CHECKED){
+                if (cartItem.getChecked() == Const.Cart.CHECKED) {
                     //如果已经勾选，增加到购物车总价当中
-                    cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(),cartProductVo.getProductTotalPrice().doubleValue());
+                    cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
                 }
                 cartProductVoList.add(cartProductVo);
             }
@@ -186,13 +185,12 @@ public class CartServiceImpl implements ICartService {
         return cartVo;
     }
 
-    private boolean getAllCheckedStatus(Integer userId){
-        if (userId == null){
+    private boolean getAllCheckedStatus(Integer userId) {
+        if (userId == null) {
             return false;
         }
         return cartMapper.selectCartProductCheckedStatusByUserId(userId) == 0;
     }
-
 
 
 }

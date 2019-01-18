@@ -19,15 +19,15 @@ public interface CartMapper {
     int updateByPrimaryKey(Cart record);
 
     //custom
-    Cart selectCartByUserIdProductId(@Param(value = "userId")Integer userId, @Param(value = "productId")Integer productId);
+    Cart selectCartByUserIdProductId(@Param(value = "userId") Integer userId, @Param(value = "productId") Integer productId);
 
     List<Cart> selectCartByUserId(Integer userId);
 
     int selectCartProductCheckedStatusByUserId(Integer userId);
 
-    int deleteByUserIdProductIds(@Param(value = "userId") Integer userId,@Param(value = "productIdList") List<String> productIdList);
+    int deleteByUserIdProductIds(@Param(value = "userId") Integer userId, @Param(value = "productIdList") List<String> productIdList);
 
-    int checkedOrUncheckedProduct(@Param(value = "userId") Integer userId,@Param(value = "productId") Integer productId,@Param(value = "checked") Integer checked);
+    int checkedOrUncheckedProduct(@Param(value = "userId") Integer userId, @Param(value = "productId") Integer productId, @Param(value = "checked") Integer checked);
 
     int selectCartProductCount(Integer userId);
 

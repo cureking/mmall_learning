@@ -14,16 +14,16 @@ public interface IProductService {
 
     ServerResponse saveOrUpdateProduct(Product product);
 
-    ServerResponse setSaleStatus(Integer productId,Integer status);
+    ServerResponse setSaleStatus(Integer productId, Integer status);
 
     ServerResponse<ProductDetailVo> manageProductDetail(Integer productId);
 
     ServerResponse<PageInfo> getProductList(int pageNum, int pageSize);
 
-    ServerResponse searchProduct(String productName,Integer productId,int pageNum,int pageSize);
+    ServerResponse searchProduct(String productName, Integer productId, int pageNum, int pageSize);
 
     ServerResponse<ProductDetailVo> productDetail(Integer productId);
 
-    ServerResponse<PageInfo> getProductByKeywordCategory(String keyword,Integer categoryId,int pageNum,int pageSize,String orderBy);
+    ServerResponse<PageInfo> getProductByKeywordCategory(String keyword, Integer categoryId, int pageNum, int pageSize, String orderBy);
 
 }

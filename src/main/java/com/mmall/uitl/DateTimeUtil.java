@@ -19,15 +19,15 @@ public class DateTimeUtil {
 
     //joda-time
     //Str - > Date
-    public static Date strToDate(String dateTimeStr,String formatStr){
+    public static Date strToDate(String dateTimeStr, String formatStr) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(formatStr);
         DateTime dateTime = dateTimeFormatter.parseDateTime(dateTimeStr);
         return dateTime.toDate();
     }
 
     //Date - > Str
-    public static String dateToStr(Date date,String formatStr){
-        if (date == null){
+    public static String dateToStr(Date date, String formatStr) {
+        if (date == null) {
             return StringUtils.EMPTY;
         }
         DateTime dateTime = new DateTime(date);
@@ -35,15 +35,15 @@ public class DateTimeUtil {
     }
 
     //重载
-    public static Date strToDate(String dateTimeStr){
+    public static Date strToDate(String dateTimeStr) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(STANDARD_FORMAT);
         DateTime dateTime = dateTimeFormatter.parseDateTime(dateTimeStr);
         return dateTime.toDate();
     }
 
     //Date - > Str
-    public static String dateToStr(Date date){
-        if (date == null){
+    public static String dateToStr(Date date) {
+        if (date == null) {
             return StringUtils.EMPTY;
         }
         DateTime dateTime = new DateTime(date);

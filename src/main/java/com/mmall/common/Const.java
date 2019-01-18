@@ -1,8 +1,6 @@
 package com.mmall.common;
 
 import com.google.common.collect.Sets;
-import com.mmall.pojo.Product;
-import com.mmall.uitl.PropertiesUtil;
 
 import java.util.Set;
 
@@ -21,7 +19,7 @@ public class Const {
     //token 作为前缀的常量，由于与TokenCache太紧密，所以放在这里
     public static final String TOKEN_PREFIX = "token_";
     //self  有效期限
-    public static final int TOKEN_DURATION = 60*60*12;
+    public static final int TOKEN_DURATION = 60 * 60 * 12;
 
 
     //    分组，但是用枚举又显得过于繁重，故采用内部接口类来进行分组
@@ -31,16 +29,16 @@ public class Const {
     }
 
     //新增Redis的有效期，用于单点登陆的登录有效期
-    public interface RedisCacheExtime{
+    public interface RedisCacheExtime {
         int REDIS_SESSION_EXTIME = 30 * 60; //30min
     }
 
-    public interface ProductListOrderBy{
+    public interface ProductListOrderBy {
         //Set的Contain时间复杂度是O(1),List的Contain时间复杂度是O(n)。
-        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
     }
 
-    public interface Cart{
+    public interface Cart {
         int CHECKED = 1;    //即购物车中选中状态
         int UNCHECKED = 0;  //购物车中未选中装填
 
@@ -48,12 +46,13 @@ public class Const {
         String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
     }
 
-    public enum ProductStatusEnum{
-        ON_SALE(1,"在线");
+    public enum ProductStatusEnum {
+        ON_SALE(1, "在线");
 
         private String value;
         private int code;
-        ProductStatusEnum(int code,String value){
+
+        ProductStatusEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
@@ -67,17 +66,18 @@ public class Const {
         }
     }
 
-    public enum OrderStatusEnum{
-        CANCELED(0,"已取消"),
-        NO_PAY(10,"未支付"),
-        PAID(20,"已支付"),
-        SHIPPED(40,"已发货"),
-        ORDER_SUCCESS(50,"订单完成"),
-        ORDER_CLOSE(60,"订单关闭");
+    public enum OrderStatusEnum {
+        CANCELED(0, "已取消"),
+        NO_PAY(10, "未支付"),
+        PAID(20, "已支付"),
+        SHIPPED(40, "已发货"),
+        ORDER_SUCCESS(50, "订单完成"),
+        ORDER_CLOSE(60, "订单关闭");
 
         private String value;
         private int code;
-        OrderStatusEnum(int code,String value){
+
+        OrderStatusEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
@@ -90,9 +90,9 @@ public class Const {
             return code;
         }
 
-        public static OrderStatusEnum codeOf(int code){
-            for(OrderStatusEnum orderStatusEnum : values()){
-                if(orderStatusEnum.getCode() == code){
+        public static OrderStatusEnum codeOf(int code) {
+            for (OrderStatusEnum orderStatusEnum : values()) {
+                if (orderStatusEnum.getCode() == code) {
                     return orderStatusEnum;
                 }
             }
@@ -100,7 +100,7 @@ public class Const {
         }
     }
 
-    public interface AlipayCallback{
+    public interface AlipayCallback {
         String TRADE_STATUS_WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
         String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
 
@@ -108,13 +108,14 @@ public class Const {
         String RESPONSE_FAILED = "failed";
     }
 
-    public enum PayPlatformEnum{
-        ALIPAY(1,"支付宝");
+    public enum PayPlatformEnum {
+        ALIPAY(1, "支付宝");
 
-        PayPlatformEnum(int code,String value){
+        PayPlatformEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
+
         private String value;
         private int code;
 
@@ -127,13 +128,14 @@ public class Const {
         }
     }
 
-    public enum PaymentTypeEnum{
-        ONLINE_PAY(1,"在线支付");
+    public enum PaymentTypeEnum {
+        ONLINE_PAY(1, "在线支付");
 
-        PaymentTypeEnum(int code,String value){
+        PaymentTypeEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
+
         private String value;
         private int code;
 
@@ -146,9 +148,9 @@ public class Const {
         }
 
 
-        public static PaymentTypeEnum codeOf(int code){
-            for(PaymentTypeEnum paymentTypeEnum : values()){
-                if(paymentTypeEnum.getCode() == code){
+        public static PaymentTypeEnum codeOf(int code) {
+            for (PaymentTypeEnum paymentTypeEnum : values()) {
+                if (paymentTypeEnum.getCode() == code) {
                     return paymentTypeEnum;
                 }
             }

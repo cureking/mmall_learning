@@ -6,7 +6,7 @@ import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.uitl.MD5Util;
-import com.mmall.uitl.RedisPoolUtil;
+import com.mmall.uitl.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<User> login(String username, String password) {
-
 
 
         int resultCount = userMapper.checkUsername(username);
@@ -119,7 +118,7 @@ public class UserServiceImpl implements IUserService {
             //"token_"前缀，可以充当命名空间的作用，防止命名冲突
 //            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
             //集群情况下，改用redis。（guava属于tomcat的）    self：这里的时间，没有使用硬编码 60*60*12
-            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username,forgetToken,Const.TOKEN_DURATION);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, Const.TOKEN_DURATION);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("密码问题的答案错误");
@@ -134,7 +133,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
 //        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
-        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者已过期");
         }
@@ -145,7 +144,7 @@ public class UserServiceImpl implements IUserService {
                 //personal_custom:个人认为重置密码的token应该只能用一次。无论是超时，还是使用过，都应该撤销
 //                TokenCache.setKey(TokenCache.TOKEN_PREFIX + username,StringUtils.EMPTY);
                 //集群情况下，改用redis。（guava属于tomcat的）    self：这里的时间，没有使用硬编码 60*60*12
-                RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username,forgetToken,Const.TOKEN_DURATION);
+                RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, Const.TOKEN_DURATION);
                 return ServerResponse.createBySuccessMessage("修改密码成功");
             }
         } else {
@@ -170,11 +169,11 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMessage("密码更新失败");
     }
 
-    public ServerResponse<User> updateInformation(User user){
+    public ServerResponse<User> updateInformation(User user) {
         //username是不能更新的
         //email也要进行一个校验。校验新的email是不是已经存在，并且存在的email如果相同的话，对应的username不能是我们当前的用户
-        int resultCount=userMapper.checkEmailByUserId(user.getEmail(),user.getId());
-        if (resultCount>0){
+        int resultCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
+        if (resultCount > 0) {
             return ServerResponse.createByErrorMessage("该email已存在，请更换email再尝试更新");
         }
 
@@ -188,14 +187,14 @@ public class UserServiceImpl implements IUserService {
 
         //这里采用-Selective的更新，因为我们定制的updateUser中存在诸多空字符串，而这些空字符串都是我们不希望变动，更新的。
         int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
-        if (updateCount>0){
-            return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccess("更新个人信息成功", updateUser);
         }
         return ServerResponse.createByErrorMessage("更新个人信息失败");
     }
 
-    public ServerResponse<User> getInformation(Integer userId){
-        User user=userMapper.selectByPrimaryKey(userId);
+    public ServerResponse<User> getInformation(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
         if (user == null)
             return ServerResponse.createByErrorMessage("找不到当前用户");
         user.setPassword(StringUtils.EMPTY);
@@ -204,11 +203,12 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * 校验是否为管理员
+     *
      * @param user
      * @return
      */
-    public ServerResponse checkAdminRole(User user){
-        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+    public ServerResponse checkAdminRole(User user) {
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN) {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();

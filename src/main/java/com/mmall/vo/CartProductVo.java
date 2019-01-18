@@ -1,7 +1,6 @@
 package com.mmall.vo;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @Description：
@@ -26,7 +25,6 @@ public class CartProductVo {
     private Integer productChecked; //购物车中此产品是否勾选
 
     private String limitQuantity;   //限制数量的一个返回结果
-
 
 
     public Integer getId() {

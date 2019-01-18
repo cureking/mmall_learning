@@ -20,29 +20,29 @@ public class PropertiesUtil {
     static {
         String filename = "mmall.properties";
         props = new Properties();
-        try{
-            props.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(filename),"UTF-8"));
-        }catch (Exception e){
-            log.error("配置文件读取异常",e);
+        try {
+            props.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
+        } catch (Exception e) {
+            log.error("配置文件读取异常", e);
         }
 
     }
 
 
-    public static String getProperty(String key){
+    public static String getProperty(String key) {
         //trim()消去空格，避免空格误事
         String value = props.getProperty(key.trim());
-        if (StringUtils.isBlank(value)){
+        if (StringUtils.isBlank(value)) {
             return null;
         }
         return value.trim();
     }
 
     //进行方法重载，便于业务的不同需求
-    public static String getProperty(String key,String defaultValue){
+    public static String getProperty(String key, String defaultValue) {
         //trim()消去空格，避免空格误事
         String value = props.getProperty(key.trim());
-        if (StringUtils.isBlank(value)){
+        if (StringUtils.isBlank(value)) {
             value = defaultValue;
         }
         return value.trim();

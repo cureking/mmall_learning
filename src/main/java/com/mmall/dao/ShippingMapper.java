@@ -19,13 +19,13 @@ public interface ShippingMapper {
     int updateByPrimaryKey(Shipping record);
 
     //custom    防止横向越权问题
-    int deleteByShippingIdUserId(@Param("shippingId")Integer shippingId,@Param("userId")Integer userId);
+    int deleteByShippingIdUserId(@Param("shippingId") Integer shippingId, @Param("userId") Integer userId);
 
     //custom
     int updateByShipping(Shipping shipping);
 
     //custom
-    Shipping selectByShippingIdUserId(@Param("shippingId")Integer shippingId,@Param("userId")Integer userId);
+    Shipping selectByShippingIdUserId(@Param("shippingId") Integer shippingId, @Param("userId") Integer userId);
 
     //custom
     List<Shipping> listByUserId(Integer userId);

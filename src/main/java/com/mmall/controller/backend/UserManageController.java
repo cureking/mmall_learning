@@ -2,7 +2,6 @@ package com.mmall.controller.backend;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +24,20 @@ public class UserManageController {
     @Autowired
     private IUserService iUserService;
 
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session){
-        ServerResponse<User> response=iUserService.login(username,password);
-        if (response.isSuccess()){
+    public ServerResponse<User> login(String username, String password, HttpSession session) {
+        ServerResponse<User> response = iUserService.login(username, password);
+        if (response.isSuccess()) {
 
             //这里就不可以将用户填入session，需要先进行用户权限认证，防止纵向越权
 //            session.setAttribute(Const.CURRENT_USER,response.getData());
-            User user=response.getData();
-            if (user.getRole() == Const.Role.ROLE_ADMIN){
+            User user = response.getData();
+            if (user.getRole() == Const.Role.ROLE_ADMIN) {
                 //说明登录的是管理员
-                session.setAttribute(Const.CURRENT_USER,user);
+                session.setAttribute(Const.CURRENT_USER, user);
                 return response;
-            }else{
+            } else {
                 return ServerResponse.createByErrorMessage("不是管理员，无法登录");
             }
         }
