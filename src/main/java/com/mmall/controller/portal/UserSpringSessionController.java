@@ -45,7 +45,11 @@ public class UserSpringSessionController {
     //返回时，自动通过SpringMVC下的MappingJacksonHttpMessageConverter(springMVC的dispatcher-servlet.xml中有相关配置）,将返回结果自动序列化为JSON
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse) {
-        //service --> mybatis --> dao
+
+        //SpringMVC全局异常的测试
+        int i = 0;
+        int j = 100/i;  //运行时异常
+
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER, response.getData());

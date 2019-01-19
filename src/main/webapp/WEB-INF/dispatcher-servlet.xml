@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--SpringMVC-->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -9,7 +10,12 @@
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!--包扫面。扫描controller注解。将controller注解到类上，就形成controller注解。实现注释驱动Bean定义，同时将bean自动注入容器中使用。-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--这里进行了Spring与SpringMVC扫描的隔离。这里通过use-default-filters关闭默认的扫描，只扫描白名单的内容-->
+    <!--于此同时，由于项目文件结构清晰，Controller文件都在controller目录下，所以不需要全项目扫描，只需要扫描controller目录下-->
+    <context:component-scan base-package="com.mmall.controller" annotation-config="true" use-default-filters="false">
+        <!--这里通过include-filter设置了白名单，只扫描Controller注解的文件-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <!--类似拦截器。相当于注册了DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter两个bean，配置一些messageconverter。即解决了@Controller注解的使用前提配置。-->
     <!--可查看https://www.cnblogs.com/shanheyongmu/p/5552427.html-->
@@ -49,4 +55,18 @@
     </bean>
 
 
+    <!--SpringMVC拦截器配置，用于统一权限管理-->
+    <mvc:interceptors>
+        <!-- 定义在这里的，所有的都会拦截-->
+        <mvc:interceptor>
+            <!--manage/a.do  /manage/*-->
+            <!--manage/b.do  /manage/*-->
+            <!--manage/product/save.do /manage/**-->
+            <!--manage/order/detail.do /manage/**-->
+            <mvc:mapping path="/manage/**"/>
+            <!--通过拦截器路径黑名单设置，放过登录请求-->
+            <mvc:exclude-mapping path="/manage/user/login.do"/>
+            <bean class="com.mmall.controller.common.interceptor.AuthorityInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

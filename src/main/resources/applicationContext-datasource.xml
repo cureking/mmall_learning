@@ -11,7 +11,8 @@
 
     <!--扫描-->
     <!--annotation-config="true" &lt;!&ndash; 是否激活属性注入注解 &ndash;&gt;-->
-    <context:component-scan base-package="com.mmall" annotation-config="true"/>
+    <!--<context:component-scan base-package="com.mmall" annotation-config="true"/>-->
+    <!--上述代码之所以注释，是因为主配置文件已经进行了整个项目的扫描了（当然排除了Controller，但database又不是Controller注解的-->
 
     <!--该bean用于实现 常量分离。-->
     <bean id="propertyConfigurer"
