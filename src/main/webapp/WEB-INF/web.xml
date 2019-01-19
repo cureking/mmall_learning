@@ -75,10 +75,16 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <!--配合过滤器-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>dispatcher</servlet-name>-->
+        <!--<url-pattern>*.do</url-pattern>-->
+    <!--</servlet-mapping>-->
 
+    <!--配合RESTful-->
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
-        <url-pattern>*.do</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
 </web-app>
