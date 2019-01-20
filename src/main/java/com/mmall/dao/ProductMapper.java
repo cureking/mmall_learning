@@ -26,4 +26,8 @@ public interface ProductMapper {
 
     //custom
     List<Product> selectByProductNameAndCategoryIds(@Param("productName") String productName, @Param("categoryIdList") List<Integer> categoryIdList);
+
+    //task
+    //此处必须采用Integer，避免因为产品无法产找到而产生的异常。int不可为null
+    Integer selectStockByProductId(Integer id);
 }

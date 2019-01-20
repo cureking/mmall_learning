@@ -30,6 +30,7 @@ import com.mmall.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -393,7 +394,6 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
-
     public ServerResponse pay(Long orderNo, Integer userId, String path) {
         Map<String, String> resultMap = Maps.newHashMap();
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
@@ -579,5 +579,34 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+
+    //task
+    //定时任务的具体内容，执行时将hour个小时前的订单全部关闭
+    @Override
+    public void closeOrder(int hour) {
+
+        Date closeDateTime = DateUtils.addHours(new Date(),-hour);
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatusEnum.NO_PAY.getCode(),DateTimeUtil.dateToStr(closeDateTime));
+        for (Order order : orderList){
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNo(order.getOrderNo());
+            for (OrderItem orderItem : orderItemList){
+                //相关SQL语句使用了for update，即悲观锁
+                //这里一定要使用主键，这样才会进行行锁，而非表锁（Mysql的InnoDB引擎）
+                Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+
+                //考虑到产品可以在订单关闭时已经下架，那么库存（stock=null）就不需要增加了
+                if (stock == null){
+                    continue;
+                }
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(stock+orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            orderMapper.closeOrderByOrderId(order.getId());
+            log.info("关闭订单OrderNo：{}",order.getOrderNo());
+        }
     }
 }
